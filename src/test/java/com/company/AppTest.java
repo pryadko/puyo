@@ -13,7 +13,7 @@ public class AppTest
 
     @Test
     public void testClearMatchPuyo() {
-        Game game = new Game();
+        Game game = new Game(6,12);
         Puyo[][] puyos = new Puyo[game.board.getBoardWidth()][game.board.getBoardHeight()];
         for (int i=0;i<game.board.getBoardWidth();i++)
             for (int j=0;j<game.board.getBoardHeight();j++){

@@ -5,14 +5,12 @@ import java.util.List;
 public class Board {
 
 
-    private static final int FILED_WIDTH = 6;
-    private static final int FILED_HEIGHT = 12;
     private static final int COUNT_MATCH_PUYO = 4;
-    private int boardWidth = FILED_WIDTH;
-    private int boardHeight = FILED_HEIGHT;
+    private int boardWidth;
+    private int boardHeight;
     private boolean move;
 
-    private Puyo[][] boardMatrix ;
+    private Puyo[][] boardMatrix;
     private int puyoFirstX, puyoFirstY, puyoSecondX, puyoSecondY;
 
 
@@ -32,7 +30,13 @@ public class Board {
         return boardHeight;
     }
 
-    public Board() {
+    public Board(int boardWidth, int boardHeight) {
+        this.boardWidth = boardWidth;
+        this.boardHeight = boardHeight;
+        clear();
+    }
+
+    public void clear() {
         boardMatrix = new Puyo[boardWidth][boardHeight];
         for (int i = 0; i < boardWidth; i++)
             for (int j = 0; j < boardHeight; j++)
@@ -61,84 +65,79 @@ public class Board {
         return move;
     }
 
-    public void move() {
+    public  synchronized void move(MoveType moveType) {
 
-        if (move) {
-            if ((puyoFirstY != boardHeight - 1) && (boardMatrix[puyoFirstX][puyoFirstY + 1].getPuyoType() == null) &&
-                    ((puyoFirstX == puyoSecondX) || (boardMatrix[puyoSecondX][puyoSecondY + 1].getPuyoType() == null))) {
-                PuyoType temp;
-                temp = boardMatrix[puyoFirstX][puyoFirstY].getPuyoType();
-                boardMatrix[puyoFirstX][puyoFirstY] = new Puyo(null);
-                boardMatrix[puyoFirstX][++puyoFirstY].setPuyoType(temp);
+            if (move) {
+                switch (moveType) {
+                    case DOWN: {
+                        if ((puyoFirstY != boardHeight - 1) && (boardMatrix[puyoFirstX][puyoFirstY + 1].getPuyoType() == null) &&
+                                ((puyoFirstX == puyoSecondX) || (boardMatrix[puyoSecondX][puyoSecondY + 1].getPuyoType() == null))) {
+                            PuyoType temp;
+                            temp = boardMatrix[puyoFirstX][puyoFirstY].getPuyoType();
+                            boardMatrix[puyoFirstX][puyoFirstY] = new Puyo(null);
+                            boardMatrix[puyoFirstX][++puyoFirstY].setPuyoType(temp);
 
-                temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
-                boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
-                boardMatrix[puyoSecondX][++puyoSecondY].setPuyoType(temp);
-            } else move = false;
-        }
-    }
+                            temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
+                            boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
+                            boardMatrix[puyoSecondX][++puyoSecondY].setPuyoType(temp);
+                        } else move = false;
+                        break;
+                    }
+                    case LEFT: {
+                        if ((puyoFirstX != 0) && (boardMatrix[puyoFirstX - 1][puyoFirstY].getPuyoType() == null)) {
+                            PuyoType temp;
+                            temp = boardMatrix[puyoFirstX][puyoFirstY].getPuyoType();
+                            boardMatrix[puyoFirstX][puyoFirstY] = new Puyo(null);
+                            boardMatrix[--puyoFirstX][puyoFirstY].setPuyoType(temp);
 
-    public void moveLeft() {
-        if (move) {
-            if ((puyoFirstX != 0) && (boardMatrix[puyoFirstX - 1][puyoFirstY].getPuyoType() == null)) {
-                PuyoType temp;
-                temp = boardMatrix[puyoFirstX][puyoFirstY].getPuyoType();
-                boardMatrix[puyoFirstX][puyoFirstY] = new Puyo(null);
-                boardMatrix[--puyoFirstX][puyoFirstY].setPuyoType(temp);
+                            temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
+                            boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
+                            boardMatrix[--puyoSecondX][puyoSecondY].setPuyoType(temp);
+                        }
+                        break;
+                    }
+                    case RIGHT: {
+                        if ((puyoSecondX != boardWidth - 1) && (boardMatrix[puyoSecondX + 1][puyoSecondY].getPuyoType() == null) &&
+                                ((puyoFirstX != puyoSecondX) || (boardMatrix[puyoFirstX + 1][puyoFirstY].getPuyoType() == null))) {
+                            PuyoType temp;
+                            temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
+                            boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
+                            boardMatrix[++puyoSecondX][puyoSecondY].setPuyoType(temp);
+                            temp = boardMatrix[puyoFirstX][puyoFirstY].getPuyoType();
+                            boardMatrix[puyoFirstX][puyoFirstY] = new Puyo(null);
+                            boardMatrix[++puyoFirstX][puyoFirstY].setPuyoType(temp);
+                        }
+                        break;
+                    }
+                    case ROTATE: {
+                        if (puyoFirstX == puyoSecondX) {
+                            if ((puyoSecondX != boardWidth - 1) && (boardMatrix[puyoSecondX + 1][puyoSecondY + 1].getPuyoType() == null)) {
+                                PuyoType temp;
+                                temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
+                                boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
+                                boardMatrix[++puyoSecondX][++puyoSecondY].setPuyoType(temp);
+                            }
 
-                temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
-                boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
-                boardMatrix[--puyoSecondX][puyoSecondY].setPuyoType(temp);
-            }
-        }
+                        } else {
+                            PuyoType temp;
+                            temp = boardMatrix[puyoFirstX][puyoFirstY].getPuyoType();
+                            boardMatrix[puyoFirstX][puyoFirstY] = new Puyo(null);
+                            boardMatrix[puyoFirstX][--puyoFirstY].setPuyoType(temp);
 
-    }
-
-    public void moveRight() {
-        if (move) {
-            if ((puyoSecondX != boardWidth - 1) && (boardMatrix[puyoSecondX + 1][puyoSecondY].getPuyoType() == null) &&
-                    ((puyoFirstX != puyoSecondX) || (boardMatrix[puyoFirstX + 1][puyoFirstY].getPuyoType() == null))) {
-                PuyoType temp;
-                temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
-                boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
-                boardMatrix[++puyoSecondX][puyoSecondY].setPuyoType(temp);
-
-                temp = boardMatrix[puyoFirstX][puyoFirstY].getPuyoType();
-                boardMatrix[puyoFirstX][puyoFirstY] = new Puyo(null);
-                boardMatrix[++puyoFirstX][puyoFirstY].setPuyoType(temp);
-            }
-        }
-
-    }
-
-    public void moveRotate() {
-        if (move) {
-
-            if (puyoFirstX == puyoSecondX) {
-                if ((puyoSecondX != boardWidth - 1) && (boardMatrix[puyoSecondX + 1][puyoSecondY + 1].getPuyoType() == null)) {
-                    PuyoType temp;
-                    temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
-                    boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
-                    boardMatrix[++puyoSecondX][++puyoSecondY].setPuyoType(temp);
+                            temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
+                            boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
+                            boardMatrix[--puyoSecondX][puyoSecondY].setPuyoType(temp);
+                            int tempInt = puyoFirstY;
+                            puyoFirstY = puyoSecondY;
+                            puyoSecondY = tempInt;
+                        }
+                    }
+                    break;
                 }
-
-            } else {
-                PuyoType temp;
-                temp = boardMatrix[puyoFirstX][puyoFirstY].getPuyoType();
-                boardMatrix[puyoFirstX][puyoFirstY] = new Puyo(null);
-                boardMatrix[puyoFirstX][--puyoFirstY].setPuyoType(temp);
-
-                temp = boardMatrix[puyoSecondX][puyoSecondY].getPuyoType();
-                boardMatrix[puyoSecondX][puyoSecondY] = new Puyo(null);
-                boardMatrix[--puyoSecondX][puyoSecondY].setPuyoType(temp);
-                int tempInt = puyoFirstY;
-                puyoFirstY = puyoSecondY;
-                puyoSecondY = tempInt;
             }
-
-            //     }
         }
-    }
+
+
 
     boolean moveSingelton() {
         boolean result = false;

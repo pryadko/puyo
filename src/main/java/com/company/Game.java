@@ -3,7 +3,9 @@ package com.company;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-
+enum MoveType {
+    DOWN, LEFT, RIGHT,ROTATE
+}
 public class Game implements Runnable {
     private static final int MAX_FALLING_SPEED = 10;
     private static final int TIME_LEVEL_SPEED = 50;
@@ -18,14 +20,6 @@ public class Game implements Runnable {
     Board board;
     PairPuyo pairPuyo;
 
-    public int getFallingSpeed() {
-        return fallingSpeed;
-    }
-
-    public void setFallingSpeed(int fallingSpeed) {
-        this.fallingSpeed = fallingSpeed;
-
-    }
 
     public int getScope() {
         return scope;
@@ -39,9 +33,10 @@ public class Game implements Runnable {
     private int scope;
     private int fallingSpeed;
 
-    public Game() {
+    public Game(int boardWidth, int boardHeight) {
+
         pairPuyo = new PairPuyo();
-        board = new Board();
+        board = new Board(boardWidth,  boardHeight);
         pauseGame = false;
         gameOver = false;
         fallingSpeed = SPEED_DEFAULT;
@@ -56,7 +51,7 @@ public class Game implements Runnable {
             if (gameOver) {
                 gameOver = false;
                 pauseGame = false;
-                board = new Board();
+                board.clear();
             }
 
         }
@@ -67,15 +62,15 @@ public class Game implements Runnable {
         }
 
         if (key == KeyEvent.VK_LEFT) {
-            this.board.moveLeft();
+            this.board.move(MoveType.LEFT);
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            this.board.moveRight();
+            this.board.move(MoveType.RIGHT);
         }
 
         if (key == KeyEvent.VK_UP) {
-            this.board.moveRotate();
+            this.board.move(MoveType.ROTATE);
         }
 
         if (key == KeyEvent.VK_DOWN) {
@@ -87,7 +82,7 @@ public class Game implements Runnable {
         sync++;
         for (int i = 0; i < board.getBoardWidth(); i++)
             for (int j = 0; j < board.getBoardHeight(); j++) {
-                g2d.drawImage(board.getBoardMatrix()[i][j].getImagePuyo(), i * Puyo.getSize(), j * Puyo.getSize(), panel);
+                g2d.drawImage(board.getBoardMatrix()[i][j].getImagePuyo(), i * Puyo.getSize(), j * Puyo.getSize(),panel);
 
             }
 
@@ -98,7 +93,7 @@ public class Game implements Runnable {
         g2d.drawLine(Puyo.getSize() * board.getBoardWidth(), 0, Puyo.getSize() * board.getBoardWidth(), Puyo.getSize() * board.getBoardHeight());
 
         g2d.drawString("SCOPE: " + getScope(), Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3);
-        g2d.drawString("SPEED: " + getFallingSpeed(), Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 20);
+        g2d.drawString("SPEED: " + fallingSpeed, Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 20);
         g2d.setColor(Color.RED);
         g2d.drawString("ESC - pause", Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 40);
         g2d.drawString("N - new game", Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 60);
@@ -129,13 +124,13 @@ public class Game implements Runnable {
             else while (pauseGame)
                 Thread.yield();
 
-            this.board.move();
+            this.board.move(MoveType.DOWN);
             if (!this.board.isMove()) {
                 if (!this.board.moveSingelton()) {
 
-                    int countClearMatchPuyo = this.board.clearMatchPuyo();
-                    this.scope += countClearMatchPuyo;
-                    this.fallingSpeed = scope / SPEED_UP_PER_SCOPE + SPEED_DEFAULT;
+                    int countClearMatchPuyo = board.clearMatchPuyo();
+                    scope += countClearMatchPuyo;
+                    fallingSpeed = scope / SPEED_UP_PER_SCOPE + SPEED_DEFAULT;
 
 
                     if (!this.board.moveSingelton() && (this.board.clearMatchPuyo() == 0) && !gameOver) {
