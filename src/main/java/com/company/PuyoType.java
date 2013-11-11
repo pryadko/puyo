@@ -2,6 +2,7 @@ package com.company;
 
 
 public enum PuyoType {
-    BLUE, GREEN, RED, YELLOW}
+    BLUE, GREEN, RED, YELLOW
+}
 
 

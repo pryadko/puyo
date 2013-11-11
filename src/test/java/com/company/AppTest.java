@@ -1,38 +1,32 @@
 package com.company;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.*;
+import static org.junit.Assert.*;
+
 
 /**
  * Unit test for simple App.
  */
 public class AppTest 
-    extends TestCase
+
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
+
+    @Test
+    public void testClearMatchPuyo() {
+        Game game = new Game();
+        Puyo[][] puyos = new Puyo[game.board.getBoardWidth()][game.board.getBoardHeight()];
+        for (int i=0;i<game.board.getBoardWidth();i++)
+            for (int j=0;j<game.board.getBoardHeight();j++){
+               puyos[i][j]= new Puyo(PuyoType.BLUE);
+            }
+        game.board.setBoardMatrix(puyos);
+        game.board.clearMatchPuyo();
+        for (int i=0;i<game.board.getBoardWidth();i++)
+        for (int j=0;j<game.board.getBoardHeight();j++){
+
+            assertEquals(null, puyos[i][j].getPuyoType());
+        }
+
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
 }

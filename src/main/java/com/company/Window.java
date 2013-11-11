@@ -4,16 +4,12 @@ import javax.swing.*;
 
 public class Window extends JFrame {
 
-    static private final int WINDOW_WIDTH = App.game.board.getBoardWidth() * Puyo.SIZE+8+Puyo.SIZE*3;
-    static private final int WINDOW_HEIGHT = App.game.board.getBoardHeight() * Puyo.SIZE+28;
-    static private final String TITLE_WINDOW = "Puyo-Puyo";
-
-    public Window() {
+    public Window(int windowWidth, int windowHeight, String windowTitle) {
         add(new Canvas());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        setSize(windowWidth, windowHeight);
         setLocationRelativeTo(null);
-        setTitle(TITLE_WINDOW);
+        setTitle(windowTitle);
         setResizable(false);
         setVisible(true);
 

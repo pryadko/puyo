@@ -7,15 +7,19 @@ import java.util.Random;
 public class Puyo {
 
 
-    static final int SIZE = 32;
-    static final Image PUYO_BLUE = new ImageIcon(Puyo.class.getResource("/puyo_blue.png")).getImage();
-    static final Image PUYO_GREEN = new ImageIcon(Puyo.class.getResource("/puyo_green.png")).getImage();
-    static final Image PUYO_RED = new ImageIcon(Puyo.class.getResource("/puyo_red.png")).getImage();
-    static final Image PUYO_YELLOW = new ImageIcon(Puyo.class.getResource("/puyo_yellow.png")).getImage();
+    private static final int SIZE = 32;
+    private static final Image PUYO_BLUE = new ImageIcon(Puyo.class.getResource("/puyo_blue.png")).getImage();
+    private static final Image PUYO_GREEN = new ImageIcon(Puyo.class.getResource("/puyo_green.png")).getImage();
+    private static final Image PUYO_RED = new ImageIcon(Puyo.class.getResource("/puyo_red.png")).getImage();
+    private static final Image PUYO_YELLOW = new ImageIcon(Puyo.class.getResource("/puyo_yellow.png")).getImage();
     private PuyoType puyoType;
 
-    public Puyo () {
+    public Puyo() {
         this(PuyoType.values()[new Random().nextInt(PuyoType.values().length)]);
+    }
+
+    public static int getSize() {
+        return SIZE;
     }
 
     public Puyo(PuyoType puyoType) {

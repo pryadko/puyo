@@ -1,14 +1,19 @@
 package com.company;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class Game implements Runnable {
-    static final int MAX_FALLING_SPEED = 10;
-    static final int TIME_LEVEL_SPEED = 50;
-    static final int DELAY = 600;
-    static int maxSpeedDown = 1;
-    boolean pauseGame;
-    boolean gameOver;
+    private static final int MAX_FALLING_SPEED = 10;
+    private static final int TIME_LEVEL_SPEED = 50;
+    private static final int DELAY = 600;
+    private static int maxSpeedDown = 1;
+    private static final int SPEED_UP_PER_SCOPE = 10;
+    private static final int SPEED_DEFAULT = 1;
+    private boolean pauseGame;
+    private boolean gameOver;
+    private int sync;
 
     Board board;
     PairPuyo pairPuyo;
@@ -38,7 +43,7 @@ public class Game implements Runnable {
         board = new Board();
         pauseGame = false;
         gameOver = false;
-        fallingSpeed = 1;
+        fallingSpeed = SPEED_DEFAULT;
         scope = 0;
     }
 
@@ -55,7 +60,8 @@ public class Game implements Runnable {
 
         }
         if (key == KeyEvent.VK_ESCAPE) {
-            pauseGame = !pauseGame;
+            if (!gameOver)
+                pauseGame = !pauseGame;
 
         }
 
@@ -73,18 +79,50 @@ public class Game implements Runnable {
 
         if (key == KeyEvent.VK_DOWN) {
             maxSpeedDown = MAX_FALLING_SPEED - fallingSpeed;
-
         }
     }
 
+    public void paint(Graphics2D g2d, JPanel panel) {
+        sync++;
+        for (int i = 0; i < board.getBoardWidth(); i++)
+            for (int j = 0; j < board.getBoardHeight(); j++) {
+                g2d.drawImage(board.getBoardMatrix()[i][j].getImagePuyo(), i * Puyo.getSize(), j * Puyo.getSize(), panel);
+
+            }
+
+        g2d.drawImage(pairPuyo.getPairPuyo().get(1).getImagePuyo(), board.getBoardWidth() * Puyo.getSize(), 0, panel);
+        g2d.drawImage(pairPuyo.getPairPuyo().get(0).getImagePuyo(), board.getBoardWidth() * Puyo.getSize(), Puyo.getSize(), panel);
+
+        g2d.setColor(Color.black);
+        g2d.drawLine(Puyo.getSize() * board.getBoardWidth(), 0, Puyo.getSize() * board.getBoardWidth(), Puyo.getSize() * board.getBoardHeight());
+
+        g2d.drawString("SCOPE: " + getScope(), Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3);
+        g2d.drawString("SPEED: " + getFallingSpeed(), Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 20);
+        g2d.setColor(Color.RED);
+        g2d.drawString("ESC - pause", Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 40);
+        g2d.drawString("N - new game", Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 60);
+        if (gameOver) {
+
+            g2d.setFont(new Font("Arial", Font.BOLD, 20));
+            g2d.setColor(Color.WHITE);
+            g2d.fillRect(panel.getWidth() / 2 - "GAME OVER".length() * 8, panel.getHeight() / 2 - 17, 120, 20);
+            g2d.setColor(Color.BLACK);
+            g2d.drawString("GAME OVER", panel.getWidth() / 2 - "GAME OVER".length() * 8, panel.getHeight() / 2);
+        }
+        if (pauseGame) {
+            g2d.setColor(Color.RED);
+            g2d.setFont(new Font("Arial", Font.BOLD, 20));
+            if (sync > 10)
+                g2d.drawString("PAUSE", panel.getWidth() / 2 - "PAUSE".length() * 8, panel.getHeight() / 2);
+            if (sync > 20) sync = 0;
+        }
+
+    }
 
     @Override
     public void run() {
         long sleep;
-
-
         while (true) {
-
             if (gameOver)
                 Thread.yield();
             else while (pauseGame)
@@ -92,16 +130,23 @@ public class Game implements Runnable {
 
             this.board.move();
             if (!this.board.isMove()) {
-                if (!this.board.moveSingelton() && !this.board.clearMatchPuyo() && !gameOver) {
-                    gameOver = !this.board.setNewPairPayo(pairPuyo.getPairPuyo(), this.board.getBoardWidth() / 2, 0);
-                    pairPuyo = new PairPuyo();
+                if (!this.board.moveSingelton()) {
+
+                    int countClearMatchPuyo = this.board.clearMatchPuyo();
+                    this.scope += countClearMatchPuyo;
+                    this.fallingSpeed = scope / SPEED_UP_PER_SCOPE + SPEED_DEFAULT;
+
+
+                    if (!this.board.moveSingelton() && (this.board.clearMatchPuyo() == 0) && !gameOver) {
+                        gameOver = !this.board.setNewPairPayo(pairPuyo.getPairPuyo(), this.board.getBoardWidth() / 2, 0);
+                        pairPuyo = new PairPuyo();
+                    }
                 }
             }
             sleep = DELAY - (fallingSpeed + maxSpeedDown) * TIME_LEVEL_SPEED;
             maxSpeedDown = 0;
             try {
                 Thread.sleep(sleep);
-
             } catch (InterruptedException e) {
                 System.out.println("interrupted error");
                 e.printStackTrace();

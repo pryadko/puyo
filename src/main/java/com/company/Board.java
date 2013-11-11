@@ -3,17 +3,11 @@ package com.company;
 import java.util.List;
 
 public class Board {
-//    public void setBoardWidth(int boardWidth) {
-//        this.boardWidth = boardWidth;
-//    }
-//
-//    public void setBoardHeight(int boardHeight) {
-//        this.boardHeight = boardHeight;
-//    }
 
-    static final int FILED_WIDTH = 6;
-    static final int FILED_HEIGHT = 12;
-    static final int COUNT_MATCH_PUYO = 4;
+
+    private static final int FILED_WIDTH = 6;
+    private static final int FILED_HEIGHT = 12;
+    private static final int COUNT_MATCH_PUYO = 4;
     private int boardWidth = FILED_WIDTH;
     private int boardHeight = FILED_HEIGHT;
     private boolean move;
@@ -28,6 +22,10 @@ public class Board {
 
     public Puyo[][] getBoardMatrix() {
         return boardMatrix;
+    }
+
+    public void setBoardMatrix(Puyo[][] boardMatrix) {
+        this.boardMatrix = boardMatrix;
     }
 
     public int getBoardHeight() {
@@ -120,8 +118,7 @@ public class Board {
 
     public void moveRotate() {
         if (move) {
-            // if((puyoSecondX != boardWidth-1) && (boardMatrix[puyoSecondX+1][puyoSecondY ].getPuyoType()== null)&&
-            //         ((puyoFirstX==puyoSecondX)||(boardMatrix[puyoSecondX+1][puyoSecondY ].getPuyoType()== null))){
+
             if (puyoFirstX == puyoSecondX) {
                 if ((puyoSecondX != boardWidth - 1) && (boardMatrix[puyoSecondX + 1][puyoSecondY + 1].getPuyoType() == null)) {
                     PuyoType temp;
@@ -164,12 +161,12 @@ public class Board {
         return result;
     }
 
-    public boolean clearMatchPuyo() {
+    public int clearMatchPuyo() {
 
-        boolean result = false;
+        int result = 0;
         Puyo[][] tempBoardMatrix = new Puyo[boardWidth][boardHeight];
         PuyoType tempPuyo;
-        int startIndex ;
+        int startIndex;
         int countEqualsPuyo;
         //vertical clean
         for (int i = 0; i < boardWidth; i++) {
@@ -178,7 +175,7 @@ public class Board {
                     tempPuyo = boardMatrix[i][j].getPuyoType();
                     startIndex = j;
                     countEqualsPuyo = 2;
-                    while ((j+countEqualsPuyo < boardHeight) && (tempPuyo == boardMatrix[i][j+countEqualsPuyo].getPuyoType())) {
+                    while ((j + countEqualsPuyo < boardHeight) && (tempPuyo == boardMatrix[i][j + countEqualsPuyo].getPuyoType())) {
                         countEqualsPuyo++;
                     }
                     if (countEqualsPuyo >= COUNT_MATCH_PUYO) {
@@ -186,7 +183,7 @@ public class Board {
                             tempBoardMatrix[i][t] = new Puyo(tempPuyo);
                         }
                     }
-                    j = startIndex + countEqualsPuyo-1;
+                    j = startIndex + countEqualsPuyo - 1;
                 }
             }
 
@@ -198,32 +195,27 @@ public class Board {
                     tempPuyo = boardMatrix[i][j].getPuyoType();
                     startIndex = i;
                     countEqualsPuyo = 2;
-                    while ((i+countEqualsPuyo < boardWidth) && (tempPuyo == boardMatrix[i+countEqualsPuyo][j].getPuyoType())) {
+                    while ((i + countEqualsPuyo < boardWidth) && (tempPuyo == boardMatrix[i + countEqualsPuyo][j].getPuyoType())) {
                         countEqualsPuyo++;
                     }
                     if (countEqualsPuyo >= COUNT_MATCH_PUYO) {
-                        for (int t = startIndex; t < i+countEqualsPuyo; t++) {
+                        for (int t = startIndex; t < i + countEqualsPuyo; t++) {
                             tempBoardMatrix[t][j] = new Puyo(tempPuyo);
                         }
                     }
-                    i=startIndex+countEqualsPuyo-1;
+                    i = startIndex + countEqualsPuyo - 1;
                 }
             }
         }
-        int scopeTemp = 0;
         for (int i = 0; i < boardWidth; i++) {
             for (int j = 0; j < boardHeight; j++) {
                 if (tempBoardMatrix[i][j] != null) {
-                    result = true;
+                    result++;
                     boardMatrix[i][j].setPuyoType(null);
-                    scopeTemp++;
                 }
             }
         }
-        if (result) {
-            App.game.setScope(scopeTemp + App.game.getScope());
-            App.game.setFallingSpeed(App.game.getScope() / 10 + 1);
-        }
+
         return result;
     }
 }

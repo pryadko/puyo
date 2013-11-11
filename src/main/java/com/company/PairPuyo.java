@@ -12,12 +12,12 @@ public class PairPuyo {
 
         return pairPuyo;
     }
+
     public PairPuyo() {
         pairPuyo = new ArrayList<>();
         pairPuyo.add(new Puyo());
         pairPuyo.add(new Puyo());
     }
-
 
 
 }
