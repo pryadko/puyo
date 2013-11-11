@@ -12,7 +12,7 @@ public class Board {
     private int boardHeight = FILED_HEIGHT;
     private boolean move;
 
-    private Puyo[][] boardMatrix;
+    private Puyo[][] boardMatrix ;
     private int puyoFirstX, puyoFirstY, puyoSecondX, puyoSecondY;
 
 

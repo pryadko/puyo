@@ -24,6 +24,7 @@ public class Game implements Runnable {
 
     public void setFallingSpeed(int fallingSpeed) {
         this.fallingSpeed = fallingSpeed;
+
     }
 
     public int getScope() {

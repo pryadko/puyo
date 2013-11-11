@@ -8,14 +8,14 @@ import java.awt.event.KeyEvent;
 public class Canvas extends JPanel implements Runnable {
     private final int DELAY = 25;
     private Thread animator;
+    private Game game;
 
-
-    public Canvas() {
+    public Canvas(Game game) {
         addKeyListener(new TAdapter());
         setFocusable(true);
         setBackground(Color.WHITE);
         setDoubleBuffered(true);
-
+        this.game = game;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class Canvas extends JPanel implements Runnable {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        App.game.paint((Graphics2D) g, this);
+        game.paint((Graphics2D) g, this);
         Toolkit.getDefaultToolkit().sync();
         g.dispose();
     }
@@ -50,7 +50,7 @@ public class Canvas extends JPanel implements Runnable {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            App.game.keyPressed(e);
+            game.keyPressed(e);
         }
     }
 }
