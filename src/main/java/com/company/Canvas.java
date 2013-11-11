@@ -28,6 +28,7 @@ public class Canvas extends JPanel implements Runnable {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        // paint board and other
         game.paint((Graphics2D) g, this);
         Toolkit.getDefaultToolkit().sync();
         g.dispose();
@@ -44,10 +45,8 @@ public class Canvas extends JPanel implements Runnable {
             }
         }
     }
-
+    // keyboard listener
     private class TAdapter extends KeyAdapter {
-
-
         @Override
         public void keyPressed(KeyEvent e) {
             game.keyPressed(e);

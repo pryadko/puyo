@@ -5,6 +5,7 @@ public class App {
     private static final int FILED_HEIGHT = 12;
 
     public static void main(String[] args) {
+    // create board size width and height
         int filedWidth=FILED_WIDTH ;
         int filedHeight=FILED_HEIGHT ;
         try {
@@ -14,8 +15,9 @@ public class App {
              filedWidth = FILED_WIDTH;
              filedHeight = FILED_HEIGHT;
         }
+        // create Game and Window -> JPanel
         Game game = new Game(filedWidth,filedHeight);
-        new Window(game.board.getBoardWidth() * Puyo.getSize() + 8 + Puyo.getSize() * 3, game.board.getBoardHeight() * Puyo.getSize() + 28, "Puyo-Puyo", game);
+        new Window(filedWidth * Puyo.SIZE + 8 + Puyo.SIZE * 3, filedHeight * Puyo.SIZE + 28, "Puyo-Puyo", game);
         new Thread(game).start();
 
     }

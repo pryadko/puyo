@@ -35,7 +35,7 @@ public class Board {
         this.boardHeight = boardHeight;
         clear();
     }
-
+    // clear board
     public void clear() {
         boardMatrix = new Puyo[boardWidth][boardHeight];
         for (int i = 0; i < boardWidth; i++)
@@ -43,7 +43,7 @@ public class Board {
                 boardMatrix[i][j] = new Puyo(null);
         move = false;
     }
-
+    //set new pair payo  on board if return false then game over
     public boolean setNewPairPayo(List<Puyo> pairPuyo, int startX, int startY) {
         if ((boardMatrix[startX][startY].getPuyoType() == null) && (boardMatrix[startX][startY + 1].getPuyoType() == null)) {
             boardMatrix[startX][startY].setPuyoType(pairPuyo.get(1).getPuyoType());
@@ -65,9 +65,9 @@ public class Board {
         return move;
     }
 
+    //move pair payo on board such us LEFT,RIGHT,DOWN and ROTATE
     public  synchronized void move(MoveType moveType) {
-
-            if (move) {
+                if (move) {
                 switch (moveType) {
                     case DOWN: {
                         if ((puyoFirstY != boardHeight - 1) && (boardMatrix[puyoFirstX][puyoFirstY + 1].getPuyoType() == null) &&
@@ -138,7 +138,7 @@ public class Board {
         }
 
 
-
+    // delete empty cells
     boolean moveSingelton() {
         boolean result = false;
 
@@ -154,7 +154,7 @@ public class Board {
         }
         return result;
     }
-
+    //find vertical or horizontal equals puyo
     public int clearMatchPuyo() {
 
         int result = 0;
@@ -182,7 +182,7 @@ public class Board {
             }
 
         }
-        //gorizont clean match
+        //horizontal clean match
         for (int j = 0; j < boardHeight; j++) {
             for (int i = 0; i < boardWidth - 1; i++) {
                 if ((boardMatrix[i][j].getPuyoType() != null) && (boardMatrix[i][j].getPuyoType() == boardMatrix[i + 1][j].getPuyoType())) {
@@ -201,6 +201,7 @@ public class Board {
                 }
             }
         }
+        //calculate scope
         for (int i = 0; i < boardWidth; i++) {
             for (int j = 0; j < boardHeight; j++) {
                 if (tempBoardMatrix[i][j] != null) {

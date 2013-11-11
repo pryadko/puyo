@@ -7,6 +7,8 @@ enum MoveType {
     DOWN, LEFT, RIGHT,ROTATE
 }
 public class Game implements Runnable {
+    Board board;
+    PairPuyo pairPuyo;
     private static final int MAX_FALLING_SPEED = 10;
     private static final int TIME_LEVEL_SPEED = 50;
     private static final int DELAY = 600;
@@ -16,20 +18,6 @@ public class Game implements Runnable {
     private boolean pauseGame;
     private boolean gameOver;
     private int sync;
-
-    Board board;
-    PairPuyo pairPuyo;
-
-
-    public int getScope() {
-        return scope;
-    }
-
-    public void setScope(int scope) {
-        this.scope = scope;
-    }
-
-
     private int scope;
     private int fallingSpeed;
 
@@ -52,6 +40,8 @@ public class Game implements Runnable {
                 gameOver = false;
                 pauseGame = false;
                 board.clear();
+                scope=0;
+                fallingSpeed=SPEED_DEFAULT;
             }
 
         }
@@ -79,24 +69,28 @@ public class Game implements Runnable {
     }
 
     public void paint(Graphics2D g2d, JPanel panel) {
+        // var sync use blink "PAUSE"
         sync++;
+        // draw board
         for (int i = 0; i < board.getBoardWidth(); i++)
             for (int j = 0; j < board.getBoardHeight(); j++) {
-                g2d.drawImage(board.getBoardMatrix()[i][j].getImagePuyo(), i * Puyo.getSize(), j * Puyo.getSize(),panel);
+                g2d.drawImage(board.getBoardMatrix()[i][j].getImagePuyo(), i * Puyo.SIZE, j * Puyo.SIZE,panel);
 
             }
-
-        g2d.drawImage(pairPuyo.getPairPuyo().get(1).getImagePuyo(), board.getBoardWidth() * Puyo.getSize(), 0, panel);
-        g2d.drawImage(pairPuyo.getPairPuyo().get(0).getImagePuyo(), board.getBoardWidth() * Puyo.getSize(), Puyo.getSize(), panel);
+        // draw two next puyo
+        g2d.drawImage(pairPuyo.getPairPuyo().get(1).getImagePuyo(), board.getBoardWidth() * Puyo.SIZE, 0, panel);
+        g2d.drawImage(pairPuyo.getPairPuyo().get(0).getImagePuyo(), board.getBoardWidth() * Puyo.SIZE, Puyo.SIZE, panel);
 
         g2d.setColor(Color.black);
-        g2d.drawLine(Puyo.getSize() * board.getBoardWidth(), 0, Puyo.getSize() * board.getBoardWidth(), Puyo.getSize() * board.getBoardHeight());
-
-        g2d.drawString("SCOPE: " + getScope(), Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3);
-        g2d.drawString("SPEED: " + fallingSpeed, Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 20);
+        g2d.drawLine(Puyo.SIZE * board.getBoardWidth(), 0, Puyo.SIZE * board.getBoardWidth(), Puyo.SIZE * board.getBoardHeight());
+        // draw text information
+        g2d.drawString("SCOPE: " + scope, Puyo.SIZE * board.getBoardWidth() + 5, Puyo.SIZE * 3);
+        g2d.drawString("SPEED: " + fallingSpeed, Puyo.SIZE * board.getBoardWidth() + 5, Puyo.SIZE * 3 + 20);
         g2d.setColor(Color.RED);
-        g2d.drawString("ESC - pause", Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 40);
-        g2d.drawString("N - new game", Puyo.getSize() * board.getBoardWidth() + 5, Puyo.getSize() * 3 + 60);
+        g2d.drawString("ESC - pause", Puyo.SIZE * board.getBoardWidth() + 5, Puyo.SIZE * 3 + 40);
+        g2d.drawString("N - new game", Puyo.SIZE * board.getBoardWidth() + 5, Puyo.SIZE * 3 + 60);
+        g2d.drawString("LEFT RIGHT", Puyo.SIZE * board.getBoardWidth() + 5, Puyo.SIZE * 3 + 80);
+        g2d.drawString("UP - rotate", Puyo.SIZE * board.getBoardWidth() + 5, Puyo.SIZE * 3 + 100);
         if (gameOver) {
 
             g2d.setFont(new Font("Arial", Font.BOLD, 20));
@@ -114,7 +108,7 @@ public class Game implements Runnable {
         }
 
     }
-
+    //main game loop
     @Override
     public void run() {
         long sleep;
