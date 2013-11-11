@@ -48,14 +48,11 @@ public class Board {
             puyoFirstY = startY + 1;
             puyoSecondX = startX;
             puyoSecondY = startY;
-
             move = true;
-
             return true;
         } else {
             move = false;
             return false;
-
         }
     }
 
@@ -109,8 +106,6 @@ public class Board {
                 temp = boardMatrix[puyoFirstX][puyoFirstY].getPuyoType();
                 boardMatrix[puyoFirstX][puyoFirstY] = new Puyo(null);
                 boardMatrix[++puyoFirstX][puyoFirstY].setPuyoType(temp);
-
-
             }
         }
 
