@@ -182,39 +182,62 @@ public class Board {
         for (int i = 0; i < boardWidth; i++) {
             for (int j = 0; j < boardHeight; j++) {
                 if (boardMatrix[i][j].getPuyoType() == null) continue;
+                // проверяем пару горизонтальных Пуё
                 if (((i + 1) != boardWidth) && (boardMatrix[i][j].getPuyoType() == boardMatrix[i + 1][j].getPuyoType())) {
+                    // если Пуё равны проверяем не являются ли они частью другой группы
                     if ((indexArray[i][j] == 0) && ((indexArray[i + 1][j] == 0))) {
+                        //пара горизонтальных равны и не относятся к какойто групе, проверим нижний Пуё(i,j+1) равен ли он Пуё(i,j)
                         if ((j + 1 != boardHeight) && (boardMatrix[i][j].getPuyoType() == boardMatrix[i][j + 1].getPuyoType())) {
+                            // нижний Пуё также равен паре горизонтальных Пуё, проверим не является он частью другой группы
                             if (indexArray[i][j + 1] == 0) {
+                                // все три Пуё равны и не относятся ни к какой группе, записываем новую группу Пуё на  indexArray
                                 indexArray[i][j + 1] = indexArray[i + 1][j] = indexArray[i][j] = index;
+                                //  и вносим номер и количество элементов группы (равно 3) в карту  mapMatch.put(index, 3)
                                 mapMatch.put(index, 3);
+                                // создадим новый номер для следующей группы
                                 index++;
                             } else {
+                                // нижний Пуё оказался частью какойто группы, а так как двое горизонтальных Пуё не относятся
+                                // ни какой группе присваиваим им  index группы нижнего Пуё
                                 indexArray[i + 1][j] = indexArray[i][j] = indexArray[i][j + 1];
+                                //увеличиваем в карте, по индексу нижнего Пуё, количество элиментов группы на 2
                                 mapMatch.put(indexArray[i][j + 1], mapMatch.get(indexArray[i][j + 1]) + 2);
 
                             }
                         } else {
+                            // нижниго Пуё или нету или он не равен двум горизонтальным Пуё, соотвественно делаем группу из 2 Пуё
                             indexArray[i + 1][j] = indexArray[i][j] = index;
+                            // вносим в карту новую группу и количество элиментов
                             mapMatch.put(index, 2);
+                            // создадим новый номер для следующей группы
                             index++;
                         }
                     } else {
+                        //горизонтальные Пуё не равны 0, проверяем которые из них равны 0
+
                         if (indexArray[i][j] == 0) {
+                            // первый Пуё не относится ни к какой группе присоиденяем его к группе indexArray[i + 1][j]
                             indexArray[i][j] = indexArray[i + 1][j];
+                            //увеличиваем на 1 количество элиментов группы indexArray[i + 1][j]
                             mapMatch.put(indexArray[i + 1][j], mapMatch.get(indexArray[i + 1][j]) + 1);
                         }
                         if (indexArray[i + 1][j] == 0) {
+                            //второй Пуё не относится ни к какой группе присоиденяем его к группе indexArray[i][j]
                             indexArray[i + 1][j] = indexArray[i][j];
+                            //увеличиваем на 1 количество элиментов группы indexArray[i][j]
                             mapMatch.put(indexArray[i][j], mapMatch.get(indexArray[i][j]) + 1);
                         }
                         if (indexArray[i + 1][j] != indexArray[i][j]) {
+                            // пара горизонтальных Пуё равны но относятся к разным группам, и их нужно обеденить в одну группу
+                            // будем считать что группа indexArray[i + 1][j]  будет удалена и перезаписана группой indexArray[i][j]
                             mapMatch.remove(indexArray[i + 1][j]);
+                            // перезаписываем все старые значение группы новыми в indexArray
+                            // и увеличиваем в mapMatch количество элиментов новой группы на количество перезаписанных элиментов старой группы
                             mapMatch.put(indexArray[i][j], mapMatch.get(indexArray[i][j]) + replaseIndex(indexArray[i + 1][j], indexArray[i][j], indexArray));
                         }
                     }
                 }
-                //-----------------------
+                //делаем аналогично как для горизонтальных  пары Пуё также и для вертикальных пар Пуё
                 if ((j + 1 != boardHeight) && (boardMatrix[i][j].getPuyoType() == boardMatrix[i][j + 1].getPuyoType())) {
                     if ((indexArray[i][j] == 0) && ((indexArray[i][j + 1] == 0))) {
                         if ((i + 1 != boardWidth) && (boardMatrix[i][j].getPuyoType() == boardMatrix[i + 1][j].getPuyoType())) {
@@ -249,12 +272,11 @@ public class Board {
                         }
                     }
                 }
-                //-------------------------
             }
         }
 
 
-        //calculate scope
+        //проходим по всем группам если количество элементов в группе больше COUNT_MATCH_PUYO очищаем эту группу.
         for (int i = 0; i < boardWidth; i++) {
             for (int j = 0; j < boardHeight; j++) {
                 if ((indexArray[i][j] != 0) && (mapMatch.get(indexArray[i][j]) >= COUNT_MATCH_PUYO)) {
