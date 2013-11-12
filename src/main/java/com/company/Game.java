@@ -13,7 +13,7 @@ public class Game implements Runnable {
     private static final int TIME_LEVEL_SPEED = 50;
     private static final int DELAY = 600;
     private static int maxSpeedDown = 1;
-    private static final int SPEED_UP_PER_SCOPE = 10;
+    private static final int SPEED_UP_PER_SCOPE = 100;
     private static final int SPEED_DEFAULT = 1;
     private boolean pauseGame;
     private boolean gameOver;
@@ -134,6 +134,7 @@ public class Game implements Runnable {
                 }
             }
             sleep = DELAY - (fallingSpeed + maxSpeedDown) * TIME_LEVEL_SPEED;
+            if (sleep<0) sleep = 1;
             maxSpeedDown = 0;
             try {
                 Thread.sleep(sleep);
