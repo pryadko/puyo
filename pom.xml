@@ -23,6 +23,12 @@
 
           </includes>
       </resource>
+          <resource>
+              <directory>src/main/java</directory>
+              <includes>
+                  <include>**/*.java</include>
+              </includes>
+          </resource>
       </resources>
       <plugins>
           <plugin>
@@ -31,6 +37,22 @@
               <configuration>
                   <source>1.7</source>
                   <target>1.7</target>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                  <archive>
+                      <manifest>
+                          <mainClass>com.company.App</mainClass>
+
+                      </manifest>
+                      <manifestEntries>
+                          <mode>development</mode>
+                          <url>${pom.url}</url>
+                      </manifestEntries>
+                  </archive>
               </configuration>
           </plugin>
       </plugins>
