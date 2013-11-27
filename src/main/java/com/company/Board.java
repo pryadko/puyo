@@ -171,7 +171,9 @@ public class Board {
         }
         return result;
     }
-
+    public int clearMatchPuyoNew() {
+     return 0;
+    } ;
     public int clearMatchPuyo() {
 
         int result = 0;
