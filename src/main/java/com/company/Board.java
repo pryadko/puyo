@@ -24,10 +24,6 @@ public class Board {
         return boardMatrix;
     }
 
-    public void setBoardMatrix(Puyo[][] boardMatrix) {
-        this.boardMatrix = boardMatrix;
-    }
-
     public int getBoardHeight() {
         return boardHeight;
     }
@@ -171,9 +167,7 @@ public class Board {
         }
         return result;
     }
-    public int clearMatchPuyoNew() {
-     return 0;
-    } ;
+
     public int clearMatchPuyo() {
 
         int result = 0;
