@@ -19,8 +19,9 @@ public class AppTest
         Puyo[][] puyosTesting = new Puyo[6][12];
         for (int i = 0; i < 6; i++)
             for (int j = 0; j < 12; j++) {
-                puyosEtalon[i][j].setPuyoType(new Puyo().getPuyoType());
-                puyosTesting[i][j].setPuyoType(puyosEtalon[i][j].getPuyoType());
+                Puyo puyo = new Puyo();
+                puyosEtalon[i][j] = puyo;
+                puyosTesting[i][j] = puyo;
             }
         Game game = new Game(6, 12);
      //   game.board.setBoardMatrix(puyosEtalon);
